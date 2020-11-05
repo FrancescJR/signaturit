@@ -21,5 +21,29 @@ class SignatureStub
         return static::create(SignatureRoleStub::default(), SignatureValueStub::default());
     }
 
+    public static function king(): Signature
+    {
+        return static::create(
+            SignatureRoleStub::withValue(SignatureRole::ROLE_KING),
+            SignatureValueStub::withValue(5)
+        );
+    }
+
+    public static function notary(): Signature
+    {
+        return static::create(
+            SignatureRoleStub::withValue(SignatureRole::ROLE_NOTARY),
+            SignatureValueStub::withValue(2)
+        );
+    }
+
+    public static function validator(): Signature
+    {
+        return static::create(
+            SignatureRoleStub::withValue(SignatureRole::ROLE_VALIDATOR),
+            SignatureValueStub::withValue(1)
+        );
+    }
+
 
 }

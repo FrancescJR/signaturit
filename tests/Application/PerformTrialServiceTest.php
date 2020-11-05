@@ -4,10 +4,8 @@ declare(strict_types=1);
 namespace Signaturit\Cesc\Application;
 
 use PHPUnit\Framework\TestCase;
-use Signaturit\Cesc\Domain\Contract\Contract;
 use Signaturit\Cesc\Domain\Contract\Service\GenerateContractService;
-use Signaturit\Cesc\Domain\Signature\Signature;
-use Signaturit\Cesc\Domain\Signature\ValueObject\SignatureValue;
+use Signaturit\Cesc\Domain\Signature\ValueObject\SignatureRole;
 use Signaturit\Cesc\Stubs\Domain\Contract\ContractStub;
 use Signaturit\Cesc\Stubs\Domain\Signature\SignatureStub;
 use Signaturit\Cesc\Stubs\Domain\Signature\ValueObject\SignatureRoleStub;
@@ -30,35 +28,35 @@ class PerformTrialServiceTest extends TestCase
         self::assertEquals(PerformTrialService::PLAINTIFF_WINS, $performTrialService->execute(""));
     }
 
-    public function prepare(array $plaintiffSignaturesNumber, array $defendantSignaturesNumber): void
+    private function prepare(array $plaintiffSignaturesNumber, array $defendantSignaturesNumber): void
     {
         $this->generateContractService = self::createMock(GenerateContractService::class);
 
-        $plaintiffSignatures = [];
-        $defendantSignatures = [];
-
-        // stubs would be nice here
-        foreach ($plaintiffSignaturesNumber as $number) {
-            $plaintiffSignatures[] = SignatureStub::create(
-                SignatureRoleStub::default(),
-                SignatureValueStub::withValue($number)
-            );
-        }
-
-        foreach ($defendantSignaturesNumber as $number) {
-            $defendantSignatures[] = SignatureStub::create(
-                SignatureRoleStub::default(),
-                SignatureValueStub::withValue($number)
-            );
-        }
-
         $contract = ContractStub::create(
-            $plaintiffSignatures,
-            $defendantSignatures
+            $this->generateSignatureList($plaintiffSignaturesNumber),
+            $this->generateSignatureList($defendantSignaturesNumber)
         );
 
         $this->generateContractService->method("execute")->willReturn($contract);
     }
 
+    private function generateSignatureList(array $initials): array
+    {
+        $signatures = [];
+        foreach ($initials as $initial) {
+            switch ($initial) {
+                case SignatureRole::ROLE_KING:
+                    $signatures[] = SignatureStub::king();
+                    break;
+                case SignatureRole::ROLE_NOTARY:
+                    $signatures[] = SignatureStub::notary();
+                    break;
+                case SignatureRole::ROLE_VALIDATOR:
+                    $signatures[] = SignatureStub::validator();
+                    break;
+            }
+        }
+        return $signatures;
+    }
 
 }

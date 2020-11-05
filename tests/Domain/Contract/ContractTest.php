@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace Signaturit\Cesc\Domain\Contract;
 
 use PHPUnit\Framework\TestCase;
-use Signaturit\Cesc\Domain\Signature\Signature;
 use Signaturit\Cesc\Domain\Signature\ValueObject\SignatureRole;
-use Signaturit\Cesc\Domain\Signature\ValueObject\SignatureValue;
 use Signaturit\Cesc\Stubs\Domain\Signature\SignatureStub;
 use Signaturit\Cesc\Stubs\Domain\Signature\ValueObject\SignatureRoleStub;
 use Signaturit\Cesc\Stubs\Domain\Signature\ValueObject\SignatureValueStub;
