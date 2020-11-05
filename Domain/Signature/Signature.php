@@ -15,4 +15,9 @@ class Signature
         $this->value = $value;
     }
 
+    public function getValue(): SignatureValue
+    {
+        return $this->value;
+    }
+
 }
