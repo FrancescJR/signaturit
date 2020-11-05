@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Signaturit\Cesc\Domain\Contract;
 
 use PHPUnit\Framework\TestCase;
-use Signaturit\Cesc\Domain\Signature\Signature;
+use Signaturit\Cesc\Stubs\Domain\Signature\SignatureStub;
 
 
 class ContractTest extends TestCase
@@ -13,7 +13,7 @@ class ContractTest extends TestCase
     public function testConstructAndTheGetter(): void
     {
         // Doing it via stubs would give it more sense
-        $signature = self::createMock(Signature::class);
+        $signature = SignatureStub::default();
 
         $contract = new Contract(
             [$signature],

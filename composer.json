@@ -9,7 +9,8 @@
   },
   "autoload": {
     "classmap": [
-      "src/"
+      "src/",
+      "stubs/"
     ]
   }
 }

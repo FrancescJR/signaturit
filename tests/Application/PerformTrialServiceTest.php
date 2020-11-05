@@ -8,6 +8,10 @@ use Signaturit\Cesc\Domain\Contract\Contract;
 use Signaturit\Cesc\Domain\Contract\Service\GenerateContractService;
 use Signaturit\Cesc\Domain\Signature\Signature;
 use Signaturit\Cesc\Domain\Signature\ValueObject\SignatureValue;
+use Signaturit\Cesc\Stubs\Domain\Contract\ContractStub;
+use Signaturit\Cesc\Stubs\Domain\Signature\SignatureStub;
+use Signaturit\Cesc\Stubs\Domain\Signature\ValueObject\SignatureRoleStub;
+use Signaturit\Cesc\Stubs\Domain\Signature\ValueObject\SignatureValueStub;
 
 class PerformTrialServiceTest extends TestCase
 {
@@ -35,24 +39,23 @@ class PerformTrialServiceTest extends TestCase
 
         // stubs would be nice here
         foreach ($plaintiffSignaturesNumber as $number) {
-            $signatureValue = self::createMock(SignatureValue::class);
-            $signatureValue->method('value')->willReturn($number);
-            $signature = self::createMock(Signature::class);
-            $signature->method('getValue')->willReturn($signatureValue);
-            $plaintiffSignatures[] = $signature;
+            $plaintiffSignatures[] = SignatureStub::create(
+                SignatureRoleStub::default(),
+                SignatureValueStub::withValue($number)
+            );
         }
 
         foreach ($defendantSignaturesNumber as $number) {
-            $signatureValue = self::createMock(SignatureValue::class);
-            $signatureValue->method('value')->willReturn($number);
-            $signature = self::createMock(Signature::class);
-            $signature->method('getValue')->willReturn($signatureValue);
-            $defendantSignatures[] = $signature;
+            $defendantSignatures[] = SignatureStub::create(
+                SignatureRoleStub::default(),
+                SignatureValueStub::withValue($number)
+            );
         }
 
-        $contract = self::createMock(Contract::class);
-        $contract->method('getPlaintiffSignatures')->willReturn($plaintiffSignatures);
-        $contract->method('getDefendantSignatures')->willReturn($defendantSignatures);
+        $contract = ContractStub::create(
+            $plaintiffSignatures,
+            $defendantSignatures
+        );
 
         $this->generateContractService->method("execute")->willReturn($contract);
     }

@@ -7,7 +7,7 @@ namespace Signaturit\Cesc\Domain\Contract\Service;
 use PHPUnit\Framework\TestCase;
 use SignatureRepository;
 use Signaturit\Cesc\Domain\Contract\Exception\InvalidContractFormatException;
-use Signaturit\Cesc\Domain\Signature\Signature;
+use Signaturit\Cesc\Stubs\Domain\Signature\SignatureStub;
 
 class GenerateContractServiceTest extends TestCase
 {
@@ -17,7 +17,7 @@ class GenerateContractServiceTest extends TestCase
     public function setUp(): void
     {
         $signatureRepository = self::createMock(SignatureRepository::class);
-        $signatureRepository->method("findByRole")->willReturn(self::createMock(Signature::class));
+        $signatureRepository->method("findByRole")->willReturn(SignatureStub::default());
 
         $this->generateContractService = new GenerateContractService(
             $signatureRepository
