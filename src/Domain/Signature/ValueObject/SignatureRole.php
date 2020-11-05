@@ -1,6 +1,10 @@
 <?php
 declare(strict_types=1);
 
+namespace Signaturit\Cesc\Domain\Signature\ValueObject;
+
+use Signaturit\Cesc\Domain\Signature\Exception\InvalidSignatureRoleValueException;
+
 class SignatureRole
 {
     public const ROLE_KING = 'K';

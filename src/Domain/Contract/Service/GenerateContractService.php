@@ -1,8 +1,20 @@
 <?php
 declare(strict_types=1);
 
+namespace Signaturit\Cesc\Domain\Contract\Service;
+
+use Signaturit\Cesc\Domain\Contract\Contract;
+use Signaturit\Cesc\Domain\Contract\Exception\InvalidContractFormatException;
+use Signaturit\Cesc\Domain\Signature\Exception\InvalidSignatureRoleValueException;
+use Signaturit\Cesc\Domain\Signature\Exception\SignatureNotFoundException;
+use Signaturit\Cesc\Domain\Signature\SignatureRepositoryInterface;
+use Signaturit\Cesc\Domain\Signature\ValueObject\SignatureRole;
+
 class GenerateContractService
 {
+    /**
+     * @var SignatureRepositoryInterface
+     */
     private $signatureRepository;
 
     public function __construct(SignatureRepositoryInterface $signatureRepository)
@@ -71,7 +83,5 @@ class GenerateContractService
             throw new InvalidContractFormatException("Contract should be in KN vs NNV format");
         }
     }
-
-
 
 }

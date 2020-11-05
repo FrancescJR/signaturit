@@ -1,6 +1,10 @@
 <?php
 declare(strict_types=1);
 
+namespace Signaturit\Cesc\Domain\Contract;
+
+use Signaturit\Cesc\Domain\Signature\Signature;
+
 class Contract
 {
     public const SEPARATOR_VALUE = 'vs';

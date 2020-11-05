@@ -1,6 +1,11 @@
 <?php
 declare(strict_types=1);
 
+namespace Signaturit\Cesc\Application;
+
+use Signaturit\Cesc\Domain\Contract\Service\GenerateContractService;
+use Signaturit\Cesc\Domain\Signature\Signature;
+
 class performTrialService
 {
     public const PLAINTIFF_WINS = 'plaintiff wins';

@@ -1,6 +1,12 @@
 <?php
 declare(strict_types=1);
 
+use Signaturit\Cesc\Domain\Signature\Exception\SignatureNotFoundException;
+use Signaturit\Cesc\Domain\Signature\Signature;
+use Signaturit\Cesc\Domain\Signature\SignatureRepositoryInterface;
+use Signaturit\Cesc\Domain\Signature\ValueObject\SignatureRole;
+use Signaturit\Cesc\Domain\Signature\ValueObject\SignatureValue;
+
 class SignatureRepository implements SignatureRepositoryInterface
 {
     private const ROLES_IN_DATABASE = [
