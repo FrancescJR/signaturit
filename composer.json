@@ -1,0 +1,10 @@
+{
+  "name": "signaturit/cesc-challenge",
+  "description": "Cesc challenge",
+  "type": "interview-challenge",
+  "license": "open to all, copy me",
+  "require": {
+    "php": "^7.4",
+    "phpunit/phpunit": "^8"
+  }
+}
