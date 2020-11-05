@@ -8,6 +8,7 @@ use Signaturit\Cesc\Domain\Contract\Service\GenerateContractService;
 use Signaturit\Cesc\Domain\Signature\Exception\InvalidSignatureRoleValueException;
 use Signaturit\Cesc\Domain\Signature\Exception\SignatureNotFoundException;
 use Signaturit\Cesc\Domain\Signature\Signature;
+use Signaturit\Cesc\Domain\Signature\ValueObject\SignatureRole;
 
 class performTrialService
 {
@@ -48,8 +49,16 @@ class performTrialService
     private function calculateSignaturesListScore(array $signaturesList): int
     {
         $value = 0;
+        $keyHasSigned = false;
 
+        // signatures list is ordered
         foreach ($signaturesList as $signature) {
+            if ($signature->getRole()->value() == SignatureRole::ROLE_KING) {
+                $keyHasSigned = true;
+            }
+            if ($keyHasSigned && $signature->getRole()->value() == SignatureRole::ROLE_VALIDATOR) {
+                continue;
+            }
             $value += $signature->getValue()->value();
         }
 

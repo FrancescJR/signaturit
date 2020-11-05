@@ -31,4 +31,9 @@ class Signature
         return $this->value;
     }
 
+    public function getRole(): SignatureRole
+    {
+        return $this->role;
+    }
+
 }
