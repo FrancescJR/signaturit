@@ -6,5 +6,10 @@
   "require": {
     "php": "^7.4",
     "phpunit/phpunit": "^8"
+  },
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
   }
 }

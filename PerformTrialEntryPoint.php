@@ -22,7 +22,8 @@ if (!isset($argv[1])) {
 }
 
 try {
-    $performTrialEndpoint->performTrial($argv[1]);
+    $return = $performTrialEndpoint->performTrial($argv[1]);
+    echo $return."\n";
 } catch (Exception $e) {
     echo $e->getMessage()."\n";
 }

@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace Signaturit\Cesc\Application;
 
+use Signaturit\Cesc\Domain\Contract\Exception\InvalidContractFormatException;
 use Signaturit\Cesc\Domain\Contract\Service\GenerateContractService;
+use Signaturit\Cesc\Domain\Signature\Exception\InvalidSignatureRoleValueException;
+use Signaturit\Cesc\Domain\Signature\Exception\SignatureNotFoundException;
 use Signaturit\Cesc\Domain\Signature\Signature;
 
 class performTrialService
@@ -46,7 +49,7 @@ class performTrialService
     {
         $value = 0;
 
-        foreach($signaturesList as $signature) {
+        foreach ($signaturesList as $signature) {
             $value += $signature->getValue()->value();
         }
 

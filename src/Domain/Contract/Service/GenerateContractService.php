@@ -79,7 +79,7 @@ class GenerateContractService
      */
     private function checkContractFormat(string $signaturesList)
     {
-        if ( ! strpos(Contract::SEPARATOR_VALUE, $signaturesList)) {
+        if ( ! strpos( $signaturesList, Contract::SEPARATOR_VALUE)) {
             throw new InvalidContractFormatException("Contract should be in KN vs NNV format");
         }
     }
