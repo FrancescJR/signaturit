@@ -17,12 +17,35 @@ class PerformTrialServiceTest extends TestCase
 
     public function testSuccess(): void
     {
-        $this->prepare([5, 4, 3, 2], [3, 4, 5, 6]);
+        $this->prepare([
+            SignatureRole::ROLE_VALIDATOR,
+            SignatureRole::ROLE_VALIDATOR,
+            SignatureRole::ROLE_VALIDATOR,
+            SignatureRole::ROLE_VALIDATOR,
+        ], [
+            SignatureRole::ROLE_VALIDATOR,
+            SignatureRole::ROLE_VALIDATOR,
+            SignatureRole::ROLE_NOTARY,
+            SignatureRole::ROLE_NOTARY,
+        ]);
         $performTrialService = new performTrialService($this->generateContractService);
 
         self::assertEquals(PerformTrialService::DEFENDANT_WINS, $performTrialService->execute(""));
+    }
 
-        $this->prepare([5, 4, 3, 2], [3, 6]);
+    public function testKingNullsValidators(): void
+    {
+        $this->prepare([
+            SignatureRole::ROLE_NOTARY,
+            SignatureRole::ROLE_NOTARY,
+            SignatureRole::ROLE_NOTARY,
+            SignatureRole::ROLE_NOTARY,
+        ], [
+            SignatureRole::ROLE_VALIDATOR,
+            SignatureRole::ROLE_VALIDATOR,
+            SignatureRole::ROLE_VALIDATOR,
+            SignatureRole::ROLE_KING,
+        ]);
         $performTrialService = new performTrialService($this->generateContractService);
 
         self::assertEquals(PerformTrialService::PLAINTIFF_WINS, $performTrialService->execute(""));
