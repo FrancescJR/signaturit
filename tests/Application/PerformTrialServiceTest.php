@@ -4,12 +4,8 @@ declare(strict_types=1);
 namespace Signaturit\Cesc\Application;
 
 use PHPUnit\Framework\TestCase;
+use Signaturit\Cesc\Domain\Contract\Contract;
 use Signaturit\Cesc\Domain\Contract\Service\GenerateContractService;
-use Signaturit\Cesc\Domain\Signature\ValueObject\SignatureRole;
-use Signaturit\Cesc\Stubs\Domain\Contract\ContractStub;
-use Signaturit\Cesc\Stubs\Domain\Signature\SignatureStub;
-use Signaturit\Cesc\Stubs\Domain\Signature\ValueObject\SignatureRoleStub;
-use Signaturit\Cesc\Stubs\Domain\Signature\ValueObject\SignatureValueStub;
 
 class PerformTrialServiceTest extends TestCase
 {
@@ -17,69 +13,36 @@ class PerformTrialServiceTest extends TestCase
 
     public function testSuccess(): void
     {
-        $this->prepare([
-            SignatureRole::ROLE_VALIDATOR,
-            SignatureRole::ROLE_VALIDATOR,
-            SignatureRole::ROLE_VALIDATOR,
-            SignatureRole::ROLE_VALIDATOR,
-        ], [
-            SignatureRole::ROLE_VALIDATOR,
-            SignatureRole::ROLE_VALIDATOR,
-            SignatureRole::ROLE_NOTARY,
-            SignatureRole::ROLE_NOTARY,
-        ]);
+        $this->prepare(8,9);
         $performTrialService = new performTrialService($this->generateContractService);
 
         self::assertEquals(PerformTrialService::DEFENDANT_WINS, $performTrialService->execute(""));
-    }
 
-    public function testKingNullsValidators(): void
-    {
-        $this->prepare([
-            SignatureRole::ROLE_NOTARY,
-            SignatureRole::ROLE_NOTARY,
-            SignatureRole::ROLE_NOTARY,
-            SignatureRole::ROLE_NOTARY,
-        ], [
-            SignatureRole::ROLE_VALIDATOR,
-            SignatureRole::ROLE_VALIDATOR,
-            SignatureRole::ROLE_VALIDATOR,
-            SignatureRole::ROLE_KING,
-        ]);
+        $this->prepare(8,7);
         $performTrialService = new performTrialService($this->generateContractService);
 
         self::assertEquals(PerformTrialService::PLAINTIFF_WINS, $performTrialService->execute(""));
     }
 
-    private function prepare(array $plaintiffSignaturesNumber, array $defendantSignaturesNumber): void
+    public function testEqualClaims()
+    {
+        $this->prepare(8,8);
+        $performTrialService = new performTrialService($this->generateContractService);
+
+        self::assertEquals(PerformTrialService::EQUAL_CLAIMS, $performTrialService->execute(""));
+    }
+
+
+
+    private function prepare(int $plaintiffScore, int $defendantScore): void
     {
         $this->generateContractService = self::createMock(GenerateContractService::class);
 
-        $contract = ContractStub::create(
-            $this->generateSignatureList($plaintiffSignaturesNumber),
-            $this->generateSignatureList($defendantSignaturesNumber)
-        );
+        $contract = self::createMock(Contract::class);
+        $contract->method("getPlaintiffScore")->willReturn($plaintiffScore);
+        $contract->method("getDefendantScore")->willReturn($defendantScore);
 
         $this->generateContractService->method("execute")->willReturn($contract);
-    }
-
-    private function generateSignatureList(array $initials): array
-    {
-        $signatures = [];
-        foreach ($initials as $initial) {
-            switch ($initial) {
-                case SignatureRole::ROLE_KING:
-                    $signatures[] = SignatureStub::king();
-                    break;
-                case SignatureRole::ROLE_NOTARY:
-                    $signatures[] = SignatureStub::notary();
-                    break;
-                case SignatureRole::ROLE_VALIDATOR:
-                    $signatures[] = SignatureStub::validator();
-                    break;
-            }
-        }
-        return $signatures;
     }
 
 }

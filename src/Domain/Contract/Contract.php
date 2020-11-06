@@ -25,15 +25,8 @@ class Contract
      */
     public function __construct(array $plaintiffSignatures, array $defendantSignatures)
     {
-        usort($plaintiffSignatures, 'self::sortSignatures');
-        usort($defendantSignatures, 'self::sortSignatures');
         $this->plaintiffSignatures = $plaintiffSignatures;
         $this->defendantSignatures = $defendantSignatures;
-    }
-
-    private static function sortSignatures(Signature $signatureA, Signature $signatureB): int
-    {
-        return $signatureA->getRole()->value() == SignatureRole::ROLE_KING ? -1 : 1;
     }
 
     /**
@@ -50,6 +43,47 @@ class Contract
     public function getDefendantSignatures(): array
     {
         return $this->defendantSignatures;
+    }
+
+    public function getPlaintiffScore(): int
+    {
+        return $this->calculateSignaturesScore($this->plaintiffSignatures);
+    }
+
+    public function getDefendantScore(): int
+    {
+        return $this->calculateSignaturesScore($this->defendantSignatures);
+    }
+
+    /**
+     * @param Signature[] $signaturesList
+     *
+     * @return int
+     */
+    private function calculateSignaturesScore(array $signaturesList): int
+    {
+        usort($signaturesList, 'self::sortSignatures');
+
+        $value = 0;
+        $keyHasSigned = false;
+
+        // signatures list is sorted with kings first
+        foreach ($signaturesList as $signature) {
+            if ($signature->getRole()->value() == SignatureRole::ROLE_KING) {
+                $keyHasSigned = true;
+            }
+            if ($keyHasSigned && $signature->getRole()->value() == SignatureRole::ROLE_VALIDATOR) {
+                continue;
+            }
+            $value += $signature->getValue()->value();
+        }
+
+        return $value;
+    }
+
+    private static function sortSignatures(Signature $signatureA, Signature $signatureB): int
+    {
+        return $signatureA->getRole()->value() == SignatureRole::ROLE_KING ? -1 : 1;
     }
 
 }

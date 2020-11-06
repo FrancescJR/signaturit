@@ -4,10 +4,7 @@ declare(strict_types=1);
 namespace Signaturit\Cesc\Domain\Contract;
 
 use PHPUnit\Framework\TestCase;
-use Signaturit\Cesc\Domain\Signature\ValueObject\SignatureRole;
 use Signaturit\Cesc\Stubs\Domain\Signature\SignatureStub;
-use Signaturit\Cesc\Stubs\Domain\Signature\ValueObject\SignatureRoleStub;
-use Signaturit\Cesc\Stubs\Domain\Signature\ValueObject\SignatureValueStub;
 
 
 class ContractTest extends TestCase
@@ -27,46 +24,47 @@ class ContractTest extends TestCase
         self::assertEquals($signature, $contract->getPlaintiffSignatures()[0]);
     }
 
-    public function testSorting(): void
+    public function testScore()
     {
-        // Doing it via stubs would give it more sense
-        $signature = SignatureStub::default();
-
         $contract = new Contract(
             [
-                SignatureStub::create(
-                    SignatureRoleStub::default(), SignatureValueStub::default()
-                ),
-                SignatureStub::create(
-                    SignatureRoleStub::withValue(SignatureRole::ROLE_NOTARY), SignatureValueStub::default()
-                ),
-                SignatureStub::create(
-                    SignatureRoleStub::withValue(SignatureRole::ROLE_KING), SignatureValueStub::default()
-                ),
-                SignatureStub::create(
-                    SignatureRoleStub::default(), SignatureValueStub::default()
-                ),
+                SignatureStub::validator(),
+                SignatureStub::validator(),
+                SignatureStub::validator(),
+                SignatureStub::validator(),
             ],
             [
-                SignatureStub::create(
-                    SignatureRoleStub::default(), SignatureValueStub::default()
-                ),
-                SignatureStub::create(
-                    SignatureRoleStub::withValue(SignatureRole::ROLE_KING), SignatureValueStub::default()
-                ),
-                SignatureStub::create(
-                    SignatureRoleStub::default(), SignatureValueStub::default()
-                ),
-                SignatureStub::create(
-                    SignatureRoleStub::withValue(SignatureRole::ROLE_KING), SignatureValueStub::default()
-                ),
+                SignatureStub::validator(),
+                SignatureStub::validator(),
+                SignatureStub::validator(),
+                SignatureStub::validator(),
             ],
         );
 
-        self::assertEquals(SignatureRole::ROLE_KING, $contract->getDefendantSignatures()[0]->getRole()->value());
-        self::assertEquals(SignatureRole::ROLE_KING, $contract->getPlaintiffSignatures()[0]->getRole()->value());
-        self::assertCount(4, $contract->getDefendantSignatures());
-        self::assertCount(4, $contract->getPlaintiffSignatures());
+        self::assertEquals(4, $contract->getPlaintiffScore());
+        self::assertEquals(4, $contract->getDefendantScore());
+
+    }
+
+    public function testKingNullsValidatorScore()
+    {
+        $contract = new Contract(
+            [
+                SignatureStub::validator(),
+                SignatureStub::notary(),
+                SignatureStub::king(),
+                SignatureStub::validator(),
+            ],
+            [
+                SignatureStub::validator(),
+                SignatureStub::king(),
+                SignatureStub::validator(),
+                SignatureStub::king(),
+            ],
+        );
+
+        self::assertEquals(7, $contract->getPlaintiffScore());
+        self::assertEquals(10, $contract->getDefendantScore());
     }
 
 }
