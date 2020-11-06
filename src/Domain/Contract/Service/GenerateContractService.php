@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace Signaturit\Cesc\Domain\Contract\Service;
 
-use Signaturit\Cesc\Domain\Contract\Contract;
+use Signaturit\Cesc\Domain\Contract\Exception\TooManyEmptySignaturesException;
 use Signaturit\Cesc\Domain\Contract\Exception\InvalidContractFormatException;
+use Signaturit\Cesc\Domain\Contract\Contract;
 use Signaturit\Cesc\Domain\Signature\Exception\InvalidSignatureRoleValueException;
 use Signaturit\Cesc\Domain\Signature\Exception\SignatureNotFoundException;
 use Signaturit\Cesc\Domain\Signature\SignatureRepositoryInterface;
@@ -12,6 +13,8 @@ use Signaturit\Cesc\Domain\Signature\ValueObject\SignatureRole;
 
 class GenerateContractService
 {
+    public const MISSING_SIGNATURE = '#';
+
     /**
      * @var SignatureRepositoryInterface
      */
@@ -29,6 +32,7 @@ class GenerateContractService
      * @throws InvalidContractFormatException
      * @throws InvalidSignatureRoleValueException
      * @throws SignatureNotFoundException
+     * @throws TooManyEmptySignaturesException
      *
      * @return Contract
      */
@@ -40,6 +44,13 @@ class GenerateContractService
 
         if (count($partiesLists) != Contract::CONTRACT_NUM_PARTIES ) {
             throw new InvalidContractFormatException("Contract should be in KN vs NNV format");
+        }
+
+        // order of checks is important, or we could have something like KNv#sKN
+        if (substr_count($contractWeirdFormat, self::MISSING_SIGNATURE) > 1) {
+            throw new TooManyEmptySignaturesException(
+                "Only one signature can be empty either in the plaintiff or the defendant side."
+            );
         }
 
         $plaintiffSignatures = $this->generateSignatures($partiesLists[0]);

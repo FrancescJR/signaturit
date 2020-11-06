@@ -10,11 +10,13 @@ class SignatureRole
     public const ROLE_KING = 'K';
     public const ROLE_NOTARY = 'N';
     public const ROLE_VALIDATOR = 'V';
+    public const ROLE_EMPTY = '#';
 
     public const ROLES =[
         self::ROLE_KING,
         self::ROLE_NOTARY,
-        self::ROLE_VALIDATOR
+        self::ROLE_VALIDATOR,
+        self::ROLE_EMPTY
     ];
 
     /**

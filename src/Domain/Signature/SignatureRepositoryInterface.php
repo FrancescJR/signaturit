@@ -17,4 +17,12 @@ interface SignatureRepositoryInterface
      */
     public function findByRole(SignatureRole $role): Signature;
 
+    /**
+     * @param int $value
+     *
+     * @return Signature
+     * @throws SignatureNotFoundException
+     */
+    public function getSmallerSignatureBiggerThan(int $value): Signature;
+
 }

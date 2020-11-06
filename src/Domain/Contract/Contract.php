@@ -10,6 +10,8 @@ class Contract
 {
     public const SEPARATOR_VALUE = 'vs';
     public const CONTRACT_NUM_PARTIES = 2;
+    public const PLAINTIFF_SIDE = 'plaintiff';
+    public const DEFENDANT_SIDE = 'defendant';
 
     /**@var Signature[] */
     private $plaintiffSignatures;
@@ -55,6 +57,17 @@ class Contract
         return $this->calculateSignaturesScore($this->defendantSignatures);
     }
 
+    public function getEmptySignatureSide(): ?string
+    {
+        if ($this->checkForEmptySignature($this->plaintiffSignatures)) {
+            return self::PLAINTIFF_SIDE;
+        }
+        if ($this->checkForEmptySignature($this->defendantSignatures)) {
+            return self::DEFENDANT_SIDE;
+        }
+        return null;
+    }
+
     /**
      * @param Signature[] $signaturesList
      *
@@ -84,6 +97,21 @@ class Contract
     private static function sortSignatures(Signature $signatureA, Signature $signatureB): int
     {
         return $signatureA->getRole()->value() == SignatureRole::ROLE_KING ? -1 : 1;
+    }
+
+    /**
+     * @param Signature[] $signaturesList
+     *
+     * @return bool
+     */
+    private function checkForEmptySignature(array $signaturesList): bool
+    {
+        foreach ($signaturesList as $signature) {
+            if ($signature->getRole()->value() == SignatureRole::ROLE_EMPTY) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

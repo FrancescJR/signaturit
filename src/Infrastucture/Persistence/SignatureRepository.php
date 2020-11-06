@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+namespace Signaturit\Cesc\Infrastructure\Persistence;
+
+use Signaturit\Cesc\Domain\Signature\Exception\InvalidSignatureRoleValueException;
 use Signaturit\Cesc\Domain\Signature\Exception\SignatureNotFoundException;
 use Signaturit\Cesc\Domain\Signature\Signature;
 use Signaturit\Cesc\Domain\Signature\SignatureRepositoryInterface;
@@ -12,7 +15,8 @@ class SignatureRepository implements SignatureRepositoryInterface
     private const ROLES_IN_DATABASE = [
         "K" => 5,
         "N" => 2,
-        "V" => 1
+        "V" => 1,
+        "#" => 0
     ];
 
     /**
@@ -27,10 +31,36 @@ class SignatureRepository implements SignatureRepositoryInterface
             throw new SignatureNotFoundException("No signature found with this role");
         }
 
-        // TODO remember here: should I make a new value object or reuse the one I got?
         return new Signature(
             $role,
             new SignatureValue(self::ROLES_IN_DATABASE[$role->value()])
         );
+    }
+
+    /**
+     * @param int $value
+     *
+     * @return Signature
+     * @throws SignatureNotFoundException
+     * @throws InvalidSignatureRoleValueException
+     */
+    public function getSmallerSignatureBiggerThan(int $value): Signature
+    {
+        $smallerSignature = null;
+        foreach (self::ROLES_IN_DATABASE as $role => $signatureValue) {
+            if ($signatureValue >= $value) {
+                $signature = new Signature(
+                    new SignatureRole($role),
+                    new SignatureValue($signatureValue)
+                );
+                if ( ! $smallerSignature or $signature->getValue()->value() < $smallerSignature->getValue()->value()) {
+                    $smallerSignature = $signature;
+                }
+            }
+        }
+        if ($smallerSignature) {
+            return $smallerSignature;
+        }
+        throw new SignatureNotFoundException("No signature bigger than the value {$value} exists");
     }
 }
