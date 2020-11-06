@@ -38,10 +38,28 @@ On phase 3 I will do it, right now each party must have at least one signature).
 
 ###Second stage
 
-`$php CalculateSignatureEndpoint.php K#NvsNNNV`
-interesting to see that not event king makes it since it invalidates the V
-if you start with #, add quotes.
+For the second stage the usage is the following:
+
+`php CalculateSignatureEndpoint.php $CONTRACT$`
+
+the contract has the same format as before. Each side can have a "#", but there can only be
+one # in the whole contract. (on the first stage, you can also add #, they count as 0).
+
+the program will return the minimum signature needed to at least equal the claim. (It was not
+specified if it had to be bigger, so I let it work with an equal value too - that means that
+if the side that has the hashtag has already the same score as teh other side, the program
+also tells you that that side is already "winning")
+
+*note that if you start with the hashtag you need to add quotes.
+
+Examples:
+`$php CalculateSignatureEndpoint.php K#NvsNNNNNV`
+
+This should return "N"
+
 `php CalculateSignatureEndpoint.php '#NVVVVvsKK'`
+
+This one will say it's impossible, we need a "K", but it will invalidate the "V" on that side
 
 
 ### Tests
@@ -50,18 +68,19 @@ Use the phpunit from the vendor. To run the tests execute:
 
 ##Comments
 
+1. About the tests I used stubs so even though is a little b cumbersome to create them at the beginning
+makes the tests way faster without having to mock thousands of things. I wanted to have a big
+coverage that's why I finally decided to go for stubs.
 
+2. I tested about Exceptions but not really about Error Types, it is quite impossible to somehow
+reach it with an "int" instead of a "string" for example, but if that were to happen, it would break.
+   
+3. I didn't use symfony. I wanted for once do something totally framework independent. It would not
+be that much lightweight. But I would have had an easier time with making the program
+   available to be reached by console/https endpoints and the configurations, that might be the ugliest
+   part of what I did.
 
-Stubs on tests
+4. The composer.json is also minimal to have the lightest thing possible.
 
-Not testing for ErrorTypes.
+5. I didn't pay much attention about the phpunit version on the composer. Don't mind it.
 
-Why not symfony?
-
-Nop "dev" part at composer.json (intention to be it the most lightweight possible)
-
-
-I didn't pay much attention to phpunit version.
-
-I hope I understood teh challenge all right, but in any case you can more or less
-have an idea of how I work.
