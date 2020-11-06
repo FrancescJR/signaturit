@@ -47,6 +47,22 @@ class Contract
         return $this->defendantSignatures;
     }
 
+    /**
+     * @param Signature $signature
+     */
+    public function addPlaintiffSignature(Signature $signature): void
+    {
+        $this->plaintiffSignatures[] = $signature;
+    }
+
+    /**
+     * @param Signature $signature
+     */
+    public function addDefendantSignature(Signature $signature): void
+    {
+        $this->defendantSignatures[] = $signature;
+    }
+
     public function getPlaintiffScore(): int
     {
         return $this->calculateSignaturesScore($this->plaintiffSignatures);

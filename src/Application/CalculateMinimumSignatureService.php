@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Signaturit\Cesc\Application;
 
 
+use Signaturit\Cesc\Application\Exception\EmptySignatureSideIsAlreadyWinningException;
 use Signaturit\Cesc\Application\Exception\NoSideHasEmptySignatureException;
 use Signaturit\Cesc\Domain\Contract\Contract;
 use Signaturit\Cesc\Domain\Contract\Exception\InvalidContractFormatException;
@@ -37,6 +38,7 @@ class CalculateMinimumSignatureService
      * @throws InvalidContractFormatException
      * @throws TooManyEmptySignaturesException
      * @throws InvalidSignatureRoleValueException
+     * @throws EmptySignatureSideIsAlreadyWinningException
      */
     public function execute(string $contractSignatures): string
     {
@@ -52,8 +54,28 @@ class CalculateMinimumSignatureService
             $contract->getDefendantScore() - $contract->getPlaintiffScore() :
             $contract->getPlaintiffScore() - $contract->getDefendantScore();
 
+        if ($scoreToReach < 1) {
+            throw new EmptySignatureSideIsAlreadyWinningException(
+                "Empty signature side has already the same score or bigger than the other side."
+            );
+        }
+
 
         $signature = $this->signatureRepository->getSmallerSignatureBiggerThan($scoreToReach);
+
+        // Final check, if the signature found is a king one, it will invalidate validators signatures,
+        // so even with the king signature might not be enough.
+        if ($contract->getEmptySignatureSide() == Contract::PLAINTIFF_SIDE) {
+            $contract->addPlaintiffSignature($signature);
+            if ($contract->getPlaintiffScore() < $contract->getDefendantScore()) {
+                throw new SignatureNotFoundException("Not even King makes it.");
+            }
+        } else {
+            $contract->addDefendantSignature($signature);
+            if ($contract->getDefendantScore() < $contract->getPlaintiffScore()) {
+                throw new SignatureNotFoundException("Not even King makes it.");
+            }
+        }
 
 
         return $signature->getRole()->value();

@@ -5,6 +5,7 @@ namespace Signaturit\Cesc\Infrastructure\Endpoint;
 
 
 use Signaturit\Cesc\Application\CalculateMinimumSignatureService;
+use Signaturit\Cesc\Application\Exception\EmptySignatureSideIsAlreadyWinningException;
 use Signaturit\Cesc\Application\Exception\NoSideHasEmptySignatureException;
 use Signaturit\Cesc\Domain\Contract\Exception\InvalidContractFormatException;
 use Signaturit\Cesc\Domain\Contract\Exception\TooManyEmptySignaturesException;
@@ -28,6 +29,7 @@ class CalculateMinimumSignature
      * @throws InvalidContractFormatException
      * @throws TooManyEmptySignaturesException
      * @throws InvalidSignatureRoleValueException
+     * @throws EmptySignatureSideIsAlreadyWinningException
      */
     public function calculateMinimumSignature(string $contractString): string
     {
