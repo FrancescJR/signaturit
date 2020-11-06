@@ -1,15 +1,52 @@
 #Cesc challenge
 
-Hello.
+Hello. This is my attempt to your challenge. I hope I didn't misunderstand too much, but, in any case,
+I believe it is enough to have an idea of how I work. 
 
-Instructions:
+##Dependencies:
 
-How to use it.
+To try it you will need PHP composer installed. Check this for more details:
+https://getcomposer.org/download/
 
-How to run the tests.
+##Installation
+
+Once you have composer, on this same directory -where this README is- execute: 
+`$composer install`
+
+##Usage
+
+### First phase
+For the first phase execute
+
+`php PerformTrialEntryPoint.php $CONTRACT$`
+
+where $Contract$ should be a string with the following format:
+`[K,N,V]+vs[K,N,V]+` 
+The left part of the "vs" represent the plaintiff signatures
+The right part of the "vs" represent the defendant signatures.
+
+There should be no spaces in between.
+
+Examples: Plaintiff has a King and a Notary signature and the defendant has 2 validators signatures:
+
+`php PerformTrialEntryPoint.php KNvsVV`
+
+The program should return which party wins.
+
+(ok I just realized I should maybe allow for a party to not have signatures. 
+On phase 3 I will do it, right now each party must have at least one signature).
+
+###Second stage
 
 
-Caveats:
+
+### Tests
+Use the phpunit from the vendor. To run the tests execute:
+`$vendor/phpunit/phpunit/phpunit`
+
+##Comments
+
+
 
 Stubs on tests
 
