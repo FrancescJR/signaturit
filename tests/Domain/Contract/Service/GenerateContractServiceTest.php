@@ -5,8 +5,9 @@ namespace Signaturit\Cesc\Domain\Contract\Service;
 
 
 use PHPUnit\Framework\TestCase;
-use SignatureRepository;
 use Signaturit\Cesc\Domain\Contract\Exception\InvalidContractFormatException;
+use Signaturit\Cesc\Domain\Contract\Exception\TooManyEmptySignaturesException;
+use Signaturit\Cesc\Infrastructure\Persistence\SignatureRepository;
 use Signaturit\Cesc\Stubs\Domain\Signature\SignatureStub;
 
 class GenerateContractServiceTest extends TestCase
@@ -34,6 +35,12 @@ class GenerateContractServiceTest extends TestCase
     {
         self::expectException(InvalidContractFormatException::class);
         $this->generateContractService->execute("KvsKvsK");
+    }
+
+    public function testManyEmptySignatures(): void
+    {
+        self::expectException(TooManyEmptySignaturesException::class);
+        $this->generateContractService->execute("K##vsKK");
     }
 
 

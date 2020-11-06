@@ -45,5 +45,13 @@ class SignatureStub
         );
     }
 
+    public static function empty(): Signature
+    {
+        return static::create(
+            SignatureRoleStub::withValue(SignatureRole::ROLE_EMPTY),
+            SignatureValueStub::withValue(0)
+        );
+    }
+
 
 }

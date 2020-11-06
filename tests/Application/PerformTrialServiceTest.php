@@ -14,12 +14,12 @@ class PerformTrialServiceTest extends TestCase
     public function testSuccess(): void
     {
         $this->prepare(8,9);
-        $performTrialService = new performTrialService($this->generateContractService);
+        $performTrialService = new PerformTrialService($this->generateContractService);
 
         self::assertEquals(PerformTrialService::DEFENDANT_WINS, $performTrialService->execute(""));
 
         $this->prepare(8,7);
-        $performTrialService = new performTrialService($this->generateContractService);
+        $performTrialService = new PerformTrialService($this->generateContractService);
 
         self::assertEquals(PerformTrialService::PLAINTIFF_WINS, $performTrialService->execute(""));
     }
@@ -27,7 +27,7 @@ class PerformTrialServiceTest extends TestCase
     public function testEqualClaims()
     {
         $this->prepare(8,8);
-        $performTrialService = new performTrialService($this->generateContractService);
+        $performTrialService = new PerformTrialService($this->generateContractService);
 
         self::assertEquals(PerformTrialService::EQUAL_CLAIMS, $performTrialService->execute(""));
     }

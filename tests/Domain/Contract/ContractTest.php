@@ -24,6 +24,20 @@ class ContractTest extends TestCase
         self::assertEquals($signature, $contract->getPlaintiffSignatures()[0]);
     }
 
+    public function testAddSignatures(): void
+    {
+        $contract = new Contract([], []);
+
+        $signature = SignatureStub::king();
+        $signature2 = SignatureStub::validator();
+
+        $contract->addPlaintiffSignature($signature);
+        $contract->addDefendantSignature($signature2);
+
+        self::assertEquals($signature, $contract->getPlaintiffSignatures()[0]);
+        self::assertEquals($signature2, $contract->getDefendantSignatures()[0]);
+    }
+
     public function testScore()
     {
         $contract = new Contract(
@@ -66,5 +80,43 @@ class ContractTest extends TestCase
         self::assertEquals(7, $contract->getPlaintiffScore());
         self::assertEquals(10, $contract->getDefendantScore());
     }
+
+    public function testGetEmptySignatureSide(): void
+    {
+        $contract = new Contract(
+            [
+                SignatureStub::empty(),
+                SignatureStub::notary(),
+                SignatureStub::king(),
+                SignatureStub::validator(),
+            ],
+            [
+                SignatureStub::validator(),
+                SignatureStub::king(),
+                SignatureStub::validator(),
+                SignatureStub::king(),
+            ],
+        );
+
+        self::assertEquals(Contract::PLAINTIFF_SIDE, $contract->getEmptySignatureSide());
+
+        $contract = new Contract(
+            [
+                SignatureStub::validator(),
+                SignatureStub::notary(),
+                SignatureStub::king(),
+                SignatureStub::validator(),
+            ],
+            [
+                SignatureStub::empty(),
+                SignatureStub::king(),
+                SignatureStub::validator(),
+                SignatureStub::king(),
+            ],
+        );
+
+        self::assertEquals(Contract::DEFENDANT_SIDE, $contract->getEmptySignatureSide());
+    }
+
 
 }
